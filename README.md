@@ -6,20 +6,28 @@ Fiszki do egzaminów aktuarialnych KNF w formie nieskończonego feedu. Przełąc
 
 ## Co jest w środku
 
-| Moduł | Egzaminy | Kafelki |
-|---|---|---|
-| Zarządzanie ryzykiem zakładu ubezpieczeń | 87–96 | zadania otwarte (5p każde) z pełnymi rozwiązaniami |
-| Matematyka pozostałych ubezpieczeń osobowych i majątkowych | 81–96 | pytania A–E z wyprowadzeniami |
+**826 kafelków** z 30 arkuszy egzaminacyjnych — wszystkie zadania, komplet:
 
-Trzy typy kafelków: **zadanie** (klik → rozwiązanie krok po kroku), **wzór**, **fakt/definicja**.
+| Moduł | Egzaminy | Zadania | Format |
+|---|---|---|---|
+| Zarządzanie ryzykiem zakładu ubezpieczeń | 84–96 | 130 | otwarte, po 5 pkt |
+| Matematyka pozostałych ubezpieczeń osobowych i majątkowych | 80–96 | 170 | wielokrotny wybór A–E |
+
+Trzy typy kafelków: **zadanie** (klik → rozwiązanie krok po kroku), **wzór**, **fakt/definicja**. Filtry u góry pozwalają zawęzić feed do jednego typu albo jednego tematu — od teorii ruiny po alokację kapitału.
 
 Każde rozwiązanie kończy się sekcją **Pułapki** — gdzie realnie traci się punkty. Przy zadaniach wielokrotnego wyboru pułapki nazywają, pod jaką konkretną pomyłkę skonstruowano każdy dystraktor.
 
 ## Błędy w kluczach KNF
 
-Każdy wynik liczbowy został przeliczony niezależnie (symbolicznie, numerycznie, a gdzie się dało również Monte Carlo) zamiast przepisany z klucza. Ponad dwadzieścia rozbieżności z oficjalnymi kluczami jest opisanych w kafelkach w ramce *Uwaga do klucza KNF* — od ucinania zamiast zaokrąglania, przez pominięte składniki, po jeden błąd merytoryczny w alokacji Eulera.
+Każdy wynik liczbowy został przeliczony niezależnie (symbolicznie, numerycznie, a gdzie się dało również metodą Monte Carlo) zamiast przepisany z klucza. Kilkadziesiąt rozbieżności z oficjalnymi kluczami jest opisanych w kafelkach w ramce *Uwaga do klucza KNF*:
+
+- ucinanie zamiast zaokrąglania oraz kwantyl 2,57 zamiast 2,5758 — najczęstsze, kosmetyczne;
+- pominięte składniki sum, przestawione cyfry, przesunięty przecinek;
+- błędy merytoryczne, m.in. cały człon krzyżowy przypisany jednej linii w alokacji Eulera, odwrócone równanie w portfelu replikującym, VaR odczytany z niewłaściwej statystyki pozycyjnej.
 
 Rozwiązania podają wartość poprawną, nie tę z klucza.
+
+Dwa arkusze (majątek 80 i 87) istnieją wyłącznie jako skany — ich treść odczytano z obrazów stron, nie z warstwy tekstowej.
 
 ## Struktura
 
@@ -32,8 +40,4 @@ marked.min.js  parser markdown (marked 12.0.2)
 
 Zero zależności do zainstalowania i zero kroku budowania — biblioteki leżą w repo, więc strona działa też bez internetu.
 
-Strona to zwykły statyczny plik — działa też po otwarciu przez serwer lokalny (`python3 -m http.server`). Samo dwuklikowe otwarcie `index.html` z dysku nie zadziała, bo przeglądarka zablokuje wczytanie `cards.json` przez `file://`.
-
-## Uzupełnianie bazy
-
-Kafelki są generowane z oficjalnych arkuszy KNF. Brakuje jeszcze: ryzyko 84–86, ryzyko 87–88 (zadania 7–10), ryzyko 89/90/92 (zadanie 10), majątek 80, oraz trzy zadania z majątku 87, których skan był nieczytelny.
+Sama strona to zwykły plik statyczny. Lokalnie uruchamiasz ją serwerem (`python3 -m http.server`) — dwuklikowe otwarcie z dysku nie zadziała, bo przeglądarka zablokuje wczytanie `cards.json` przez `file://`.

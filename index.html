@@ -193,6 +193,10 @@ th{background:var(--surface-2);font-weight:600}
     });
     return html.replace(/<table>/g,'<div class="scroll-x"><table>').replace(/<\/table>/g,'</table></div>');
   }
+  /* tytuł: ten sam markdown+LaTeX, ale bez otaczającego <p> */
+  function mdInline(src){
+    return md(src).replace(/^<p>/,'').replace(/<\/p>\s*$/,'');
+  }
 
   var KIND={zadanie:'Zadanie',wzor:'Wzór',fakt:'Fakt'};
   function build(c){
@@ -208,7 +212,7 @@ th{background:var(--surface-2);font-weight:600}
     el.appendChild(head);
     var body=document.createElement('div');
     body.className='card-body';
-    body.innerHTML=(c.tytul?'<h2 class="card-title">'+c.tytul+'</h2>':'')+md(c.tresc);
+    body.innerHTML=(c.tytul?'<h2 class="card-title">'+mdInline(c.tytul)+'</h2>':'')+md(c.tresc);
     el.appendChild(body);
     if(c.typ==='zadanie' && c.rozwiazanie){
       var btn=document.createElement('button');
