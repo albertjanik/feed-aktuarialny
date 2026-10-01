@@ -50,9 +50,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font
 img{max-width:100%}
 [hidden]{display:none!important}
 
+/* ---------- pasek górny ---------- */
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);
   backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
-.bar-in{max-width:680px;margin:0 auto;padding:10px 16px 11px;display:flex;flex-direction:column;gap:9px}
+.bar-in{max-width:680px;margin:0 auto;padding:10px 16px 11px;display:flex;flex-direction:column;gap:8px}
 .bar-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .brand{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:-.01em;margin:0;white-space:nowrap}
 .brand span{color:var(--accent)}
@@ -66,17 +67,38 @@ img{max-width:100%}
 
 .filters{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .chip{appearance:none;font:inherit;font-size:12px;font-weight:500;padding:4px 11px;border-radius:999px;cursor:pointer;
-  border:1px solid var(--line);background:var(--surface);color:var(--muted)}
+  border:1px solid var(--line);background:var(--surface);color:var(--muted);white-space:nowrap}
 .chip[aria-pressed="true"]{border-color:transparent;background:var(--accent-soft);color:var(--accent)}
+.chip.s-nowy[aria-pressed="true"]{background:var(--line-soft);color:var(--ink-2)}
+.chip.s-nieumiem[aria-pressed="true"]{background:var(--ochre-soft);color:var(--ochre)}
+.chip.s-umiem[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
 .chip:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.sep{width:1px;align-self:stretch;background:var(--line);margin:0 2px}
 select{font:inherit;font-size:12px;padding:4px 8px;border-radius:8px;border:1px solid var(--line);
-  background:var(--surface);color:var(--ink-2);max-width:220px}
+  background:var(--surface);color:var(--ink-2);max-width:200px}
 .ghost{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--muted);
-  font:inherit;font-size:12px;padding:4px 11px;border-radius:999px;cursor:pointer}
+  font:inherit;font-size:12px;padding:4px 11px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.ghost:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.progress{font-family:var(--mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;
+  white-space:nowrap;display:flex;gap:9px;margin-left:auto}
+.progress b{font-weight:500}
+.progress .p-u{color:var(--accent)}
+.progress .p-n{color:var(--ochre)}
 
+/* panel postępu */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 13px;
+  display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:var(--ink-2)}
+.panel textarea{width:100%;min-height:62px;font-family:var(--mono);font-size:11px;padding:7px;border-radius:7px;
+  border:1px solid var(--line);background:var(--surface-2);color:var(--ink);resize:vertical}
+.panel-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.panel-msg{font-size:11.5px;color:var(--accent)}
+
+/* ---------- strumień ---------- */
 main{max-width:680px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-direction:column;gap:14px}
 
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.card[data-st="umiem"]{border-left:3px solid var(--accent)}
+.card[data-st="nieumiem"]{border-left:3px solid var(--ochre)}
 .card-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding:12px 16px 0}
 .kind{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;font-weight:500;
   padding:2px 7px;border-radius:5px}
@@ -113,6 +135,19 @@ main{max-width:680px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-dire
 .sol code{font-family:var(--mono);font-size:.88em;background:var(--surface);padding:1px 4px;border-radius:4px;border:1px solid var(--line)}
 .sol hr{border:0;border-top:1px solid var(--line);margin:16px 0}
 
+/* znacznik umiem / nie umiem */
+.mark{display:flex;align-items:center;gap:7px;padding:9px 16px;border-top:1px solid var(--line-soft);
+  background:var(--surface);font-size:12px}
+.mark-lbl{color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-right:auto}
+.mk{appearance:none;font:inherit;font-size:12px;font-weight:500;padding:5px 12px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:var(--surface);color:var(--muted);white-space:nowrap}
+.mk:hover{border-color:var(--ink-2)}
+.mk:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.card[data-st="umiem"] .mk-yes{background:var(--accent);border-color:var(--accent);color:#fff}
+.card[data-st="nieumiem"] .mk-no{background:var(--ochre);border-color:var(--ochre);color:#fff}
+.card[data-st="umiem"] .mark-lbl{color:var(--accent)}
+.card[data-st="nieumiem"] .mark-lbl{color:var(--ochre)}
+
 .note{margin-top:14px;background:var(--warn-soft);border:1px solid var(--warn-line);border-left:3px solid var(--warn);
   border-radius:0 8px 8px 0;padding:10px 13px;font-family:var(--sans);font-size:13px;line-height:1.5;color:var(--ink-2)}
 .note b{color:var(--warn);font-weight:600;display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px}
@@ -127,7 +162,7 @@ th{background:var(--surface-2);font-weight:600}
 
 .empty{text-align:center;padding:56px 20px;color:var(--muted)}
 .empty h2{font-family:var(--serif);font-size:20px;color:var(--ink);margin:0 0 8px}
-.empty p{margin:0 auto;max-width:34ch;font-size:14px}
+.empty p{margin:0 auto;max-width:36ch;font-size:14px}
 #sentinel{height:1px}
 .loading{text-align:center;color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:.08em;
   text-transform:uppercase;padding:8px 0 16px}
@@ -149,14 +184,32 @@ th{background:var(--surface-2);font-weight:600}
       <button class="chip" id="t-zadanie" aria-pressed="true">Zadania</button>
       <button class="chip" id="t-wzor" aria-pressed="true">Wzory</button>
       <button class="chip" id="t-fakt" aria-pressed="true">Fakty</button>
+      <span class="sep" aria-hidden="true"></span>
+      <button class="chip s-nowy" id="s-nowy" aria-pressed="true">Nie widziałem</button>
+      <button class="chip s-nieumiem" id="s-nieumiem" aria-pressed="true">Nie umiem</button>
+      <button class="chip s-umiem" id="s-umiem" aria-pressed="true">Umiem</button>
+    </div>
+    <div class="filters">
       <select id="temat" aria-label="Temat"><option value="all">Wszystkie tematy</option></select>
+      <select id="egzamin" aria-label="Egzamin"><option value="all">Wszystkie egzaminy</option></select>
       <button class="ghost" id="shuffle">Przetasuj</button>
+      <span class="progress" id="progress"></span>
+    </div>
+    <div class="panel" id="panel" hidden>
+      <div>Postęp zapisuje się w tej przeglądarce. Żeby przenieść go na inne urządzenie, skopiuj go tutaj i wklej tam.</div>
+      <div class="panel-row">
+        <button class="ghost" id="p-copy">Kopiuj postęp</button>
+        <button class="ghost" id="p-load">Wczytaj z pola poniżej</button>
+        <button class="ghost" id="p-reset">Wyczyść wszystko</button>
+        <span class="panel-msg" id="p-msg"></span>
+      </div>
+      <textarea id="p-box" placeholder="Wklej tu skopiowany postęp i kliknij „Wczytaj”." spellcheck="false"></textarea>
     </div>
   </div>
 </header>
 
 <main id="feed">
-  <div class="empty"><h2>Wczytuję kafelki…</h2><p>Chwila — baza zadań waży około megabajta.</p></div>
+  <div class="empty"><h2>Wczytuję kafelki…</h2><p>Chwila — baza zadań waży około dwóch megabajtów.</p></div>
 </main>
 <div id="sentinel"></div>
 <div class="loading" id="loading" hidden>losuję kolejne…</div>
@@ -171,12 +224,24 @@ th{background:var(--surface-2);font-weight:600}
     get:function(k,d){ try{ var v=localStorage.getItem('feedakt.'+k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
     set:function(k,v){ try{ localStorage.setItem('feedakt.'+k,JSON.stringify(v)); }catch(e){} }
   };
+
+  /* ---- stan wiedzy: id kafelka -> 'umiem' | 'nieumiem' (brak wpisu = 'nowy') ---- */
+  var MARK = LS.get('mark',{});
+  function st(id){ return MARK[id] || 'nowy'; }
+  function setSt(id,v){
+    if(v==='nowy') delete MARK[id]; else MARK[id]=v;
+    LS.set('mark',MARK); updateProgress();
+  }
+
   var state = {
-    modul: LS.get('modul','ryzyko'),
-    typy:  LS.get('typy',['zadanie','wzor','fakt']),
-    temat: LS.get('temat','all')
+    modul:   LS.get('modul','ryzyko'),
+    typy:    LS.get('typy',['zadanie','wzor','fakt']),
+    status:  LS.get('status',['nowy','nieumiem','umiem']),
+    temat:   LS.get('temat','all'),
+    egzamin: LS.get('egzamin','all')
   };
 
+  /* ---- markdown + LaTeX ---- */
   function md(src){
     if(!src) return '';
     var math=[];
@@ -193,27 +258,30 @@ th{background:var(--surface-2);font-weight:600}
     });
     return html.replace(/<table>/g,'<div class="scroll-x"><table>').replace(/<\/table>/g,'</table></div>');
   }
-  /* tytuł: ten sam markdown+LaTeX, ale bez otaczającego <p> */
-  function mdInline(src){
-    return md(src).replace(/^<p>/,'').replace(/<\/p>\s*$/,'');
-  }
+  function mdInline(src){ return md(src).replace(/^<p>/,'').replace(/<\/p>\s*$/,''); }
 
+  /* ---- budowa kafelka ---- */
   var KIND={zadanie:'Zadanie',wzor:'Wzór',fakt:'Fakt'};
+  var STLBL={nowy:'Nie widziałem',nieumiem:'Nie umiem',umiem:'Umiem'};
   function build(c){
     var el=document.createElement('article');
     el.className='card';
+    el.setAttribute('data-st',st(c.id));
     var src = c.typ==='zadanie' ? (c.egzamin+'/'+c.zadanie) : (c.zrodlo||('egz. '+c.egzamin));
     var pts = c.typ==='zadanie' && c.punkty ? ' · '+c.punkty+'p' : '';
+
     var head=document.createElement('div');
     head.className='card-head';
     head.innerHTML='<span class="kind k-'+c.typ+'">'+KIND[c.typ]+'</span>'+
                    '<span class="src">'+src+pts+'</span>'+
                    '<span class="topic">'+(c.temat||'')+'</span>';
     el.appendChild(head);
+
     var body=document.createElement('div');
     body.className='card-body';
     body.innerHTML=(c.tytul?'<h2 class="card-title">'+mdInline(c.tytul)+'</h2>':'')+md(c.tresc);
     el.appendChild(body);
+
     if(c.typ==='zadanie' && c.rozwiazanie){
       var btn=document.createElement('button');
       btn.className='reveal';
@@ -236,12 +304,33 @@ th{background:var(--surface-2);font-weight:600}
       });
       el.appendChild(btn); el.appendChild(sol);
     }
+
+    /* znacznik wiedzy */
+    var mark=document.createElement('div');
+    mark.className='mark';
+    mark.innerHTML='<span class="mark-lbl">'+STLBL[st(c.id)]+'</span>'+
+      '<button class="mk mk-no" type="button">Nie umiem</button>'+
+      '<button class="mk mk-yes" type="button">Umiem</button>';
+    function apply(v){
+      setSt(c.id,v);
+      el.setAttribute('data-st',v);
+      mark.querySelector('.mark-lbl').textContent=STLBL[v];
+    }
+    mark.querySelector('.mk-no').addEventListener('click',function(){
+      apply(st(c.id)==='nieumiem' ? 'nowy' : 'nieumiem');
+    });
+    mark.querySelector('.mk-yes').addEventListener('click',function(){
+      apply(st(c.id)==='umiem' ? 'nowy' : 'umiem');
+    });
+    el.appendChild(mark);
     return el;
   }
 
+  /* ---- pula i losowanie ---- */
   var pool=[], cursor=0, shown=0;
   var feed=document.getElementById('feed'), count=document.getElementById('count'),
-      loading=document.getElementById('loading'), temat=document.getElementById('temat');
+      loading=document.getElementById('loading'), temat=document.getElementById('temat'),
+      egzamin=document.getElementById('egzamin'), progress=document.getElementById('progress');
 
   function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; } }
   function emptyState(msg,sub){
@@ -249,47 +338,92 @@ th{background:var(--surface-2);font-weight:600}
     d.innerHTML='<h2>'+msg+'</h2><p>'+sub+'</p>';
     return d;
   }
+  function matches(c){
+    return c.modul===state.modul &&
+           state.typy.indexOf(c.typ)>-1 &&
+           state.status.indexOf(st(c.id))>-1 &&
+           (state.temat==='all'||c.temat===state.temat) &&
+           (state.egzamin==='all'||String(c.egzamin)===state.egzamin);
+  }
   function rebuild(){
-    pool=DATA.filter(function(c){
-      return c.modul===state.modul && state.typy.indexOf(c.typ)>-1 &&
-             (state.temat==='all'||c.temat===state.temat);
-    });
-    shuffle(pool); cursor=0; shown=0;
+    pool=DATA.filter(matches);
+    shuffle(pool); cursor=0; shown=0; koniec=false;
     feed.innerHTML='';
     if(!pool.length){
-      feed.appendChild(emptyState('Brak kafelków','Żaden kafelek nie pasuje do wybranych filtrów. Poluzuj temat albo włącz więcej typów.'));
+      feed.appendChild(emptyState('Nic nie pasuje',
+        'Żaden kafelek nie pasuje do wybranych filtrów. Poluzuj temat, egzamin albo włącz więcej stanów wiedzy.'));
       loading.hidden=true; updateCount(); return;
     }
     loading.hidden=false;
     append(5);
   }
+  /* Mała pula (np. sam filtr „umiem") kończy się zamiast powtarzać w kółko
+     te same kilka kafelków — przy większej puli scroll jest nieskończony. */
+  var MIN_CYKL=8, koniec=false;
   function append(n){
+    if(koniec) return;
     var frag=document.createDocumentFragment();
+    n=Math.min(n,pool.length);
     for(var i=0;i<n;i++){
-      if(cursor>=pool.length){ shuffle(pool); cursor=0; }
+      if(cursor>=pool.length){
+        if(pool.length<MIN_CYKL){
+          koniec=true;
+          var d=document.createElement('div'); d.className='empty';
+          d.innerHTML='<h2>To wszystko</h2><p>Przy tych filtrach zostało '+pool.length+
+            (pool.length===1?' kafelek':(pool.length<5?' kafelki':' kafelków'))+
+            '. Poluzuj filtry albo przetasuj, żeby lecieć dalej.</p>';
+          frag.appendChild(d); break;
+        }
+        shuffle(pool); cursor=0;
+      }
       frag.appendChild(build(pool[cursor++])); shown++;
     }
     feed.appendChild(frag); updateCount();
+    if(koniec) loading.hidden=true;
   }
   function updateCount(){ count.textContent = pool.length ? (shown+' / '+pool.length+' w puli') : '0 kafelków'; }
+  function updateProgress(){
+    var u=0,n=0,o=0;
+    for(var i=0;i<DATA.length;i++){
+      if(DATA[i].modul!==state.modul) continue;
+      var s=st(DATA[i].id);
+      if(s==='umiem') u++; else if(s==='nieumiem') n++; else o++;
+    }
+    progress.innerHTML='<span class="p-u">umiem <b>'+u+'</b></span>'+
+                       '<span class="p-n">nie umiem <b>'+n+'</b></span>'+
+                       '<span>nowe <b>'+o+'</b></span>';
+  }
 
+  /* ---- sterowanie ---- */
   function syncUI(){
     document.getElementById('m-ryzyko').setAttribute('aria-pressed',String(state.modul==='ryzyko'));
     document.getElementById('m-majatek').setAttribute('aria-pressed',String(state.modul==='majatek'));
     ['zadanie','wzor','fakt'].forEach(function(t){
       document.getElementById('t-'+t).setAttribute('aria-pressed',String(state.typy.indexOf(t)>-1));
     });
+    ['nowy','nieumiem','umiem'].forEach(function(s){
+      document.getElementById('s-'+s).setAttribute('aria-pressed',String(state.status.indexOf(s)>-1));
+    });
   }
-  function fillTematy(){
-    var seen={}, list=[];
-    DATA.forEach(function(c){ if(c.modul===state.modul && !seen[c.temat]){ seen[c.temat]=1; list.push(c.temat); } });
-    list.sort(function(a,b){ return a.localeCompare(b,'pl'); });
+  function fillSelects(){
+    var seenT={}, listT=[], seenE={}, listE=[];
+    DATA.forEach(function(c){
+      if(c.modul!==state.modul) return;
+      if(!seenT[c.temat]){ seenT[c.temat]=1; listT.push(c.temat); }
+      if(!seenE[c.egzamin]){ seenE[c.egzamin]=1; listE.push(c.egzamin); }
+    });
+    listT.sort(function(a,b){ return a.localeCompare(b,'pl'); });
+    listE.sort(function(a,b){ return b-a; });
     temat.innerHTML='<option value="all">Wszystkie tematy</option>';
-    list.forEach(function(t){ var o=document.createElement('option'); o.value=t; o.textContent=t; temat.appendChild(o); });
-    if(list.indexOf(state.temat)===-1) state.temat='all';
+    listT.forEach(function(t){ var o=document.createElement('option'); o.value=t; o.textContent=t; temat.appendChild(o); });
+    if(listT.indexOf(state.temat)===-1) state.temat='all';
     temat.value=state.temat;
+    egzamin.innerHTML='<option value="all">Wszystkie egzaminy</option>';
+    listE.forEach(function(e){ var o=document.createElement('option'); o.value=String(e); o.textContent='Egzamin '+e; egzamin.appendChild(o); });
+    if(listE.map(String).indexOf(state.egzamin)===-1) state.egzamin='all';
+    egzamin.value=state.egzamin;
   }
-  function setModul(m){ state.modul=m; LS.set('modul',m); syncUI(); fillTematy(); rebuild(); window.scrollTo(0,0); }
+  function setModul(m){ state.modul=m; LS.set('modul',m); syncUI(); fillSelects(); updateProgress(); rebuild(); window.scrollTo(0,0); }
 
   document.getElementById('m-ryzyko').addEventListener('click',function(){setModul('ryzyko');});
   document.getElementById('m-majatek').addEventListener('click',function(){setModul('majatek');});
@@ -300,9 +434,46 @@ th{background:var(--surface-2);font-weight:600}
       LS.set('typy',state.typy); syncUI(); rebuild();
     });
   });
+  ['nowy','nieumiem','umiem'].forEach(function(s){
+    document.getElementById('s-'+s).addEventListener('click',function(){
+      var i=state.status.indexOf(s);
+      if(i>-1){ if(state.status.length===1) return; state.status.splice(i,1); } else state.status.push(s);
+      LS.set('status',state.status); syncUI(); rebuild();
+    });
+  });
   temat.addEventListener('change',function(){ state.temat=temat.value; LS.set('temat',state.temat); rebuild(); });
+  egzamin.addEventListener('change',function(){ state.egzamin=egzamin.value; LS.set('egzamin',state.egzamin); rebuild(); });
   document.getElementById('shuffle').addEventListener('click',function(){ rebuild(); window.scrollTo(0,0); });
 
+  /* ---- panel postępu ---- */
+  var panel=document.getElementById('panel'), pmsg=document.getElementById('p-msg'), pbox=document.getElementById('p-box');
+  progress.addEventListener('click',function(){ panel.hidden=!panel.hidden; pmsg.textContent=''; });
+  progress.style.cursor='pointer';
+  progress.title='Kliknij, żeby przenieść postęp na inne urządzenie';
+  function say(t){ pmsg.textContent=t; setTimeout(function(){ if(pmsg.textContent===t) pmsg.textContent=''; },4000); }
+  document.getElementById('p-copy').addEventListener('click',function(){
+    var txt=JSON.stringify(MARK);
+    pbox.value=txt;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){ say('Skopiowane do schowka.'); },
+        function(){ pbox.select(); say('Zaznaczone — skopiuj ręcznie.'); });
+    } else { pbox.select(); say('Zaznaczone — skopiuj ręcznie.'); }
+  });
+  document.getElementById('p-load').addEventListener('click',function(){
+    try{
+      var o=JSON.parse(pbox.value);
+      if(!o || typeof o!=='object' || Array.isArray(o)) throw new Error('zły format');
+      var n=0;
+      for(var k in o){ if(o[k]==='umiem'||o[k]==='nieumiem'){ MARK[k]=o[k]; n++; } }
+      LS.set('mark',MARK); updateProgress(); rebuild();
+      say('Wczytano '+n+' oznaczeń.');
+    }catch(e){ say('To nie wygląda na zapisany postęp.'); }
+  });
+  document.getElementById('p-reset').addEventListener('click',function(){
+    MARK={}; LS.set('mark',MARK); updateProgress(); rebuild(); say('Wyczyszczone.');
+  });
+
+  /* ---- nieskończony scroll ---- */
   new IntersectionObserver(function(es){
     if(es[0].isIntersecting && pool.length) append(4);
   },{rootMargin:'900px'}).observe(document.getElementById('sentinel'));
@@ -310,7 +481,7 @@ th{background:var(--surface-2);font-weight:600}
   syncUI();
   fetch('cards.json',{cache:'no-cache'})
     .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
-    .then(function(d){ DATA=d; fillTematy(); rebuild(); })
+    .then(function(d){ DATA=d; fillSelects(); updateProgress(); rebuild(); })
     .catch(function(e){
       feed.innerHTML='';
       feed.appendChild(emptyState('Nie udało się wczytać bazy zadań',
