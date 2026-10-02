@@ -6,14 +6,17 @@ Fiszki do egzaminów aktuarialnych KNF w formie nieskończonego feedu. Przełąc
 
 ## Co jest w środku
 
-**826 kafelków** z 30 arkuszy egzaminacyjnych — wszystkie zadania, komplet:
+**1015 kafelków** z 37 arkuszy egzaminacyjnych — wszystkie zadania, komplet:
 
 | Moduł | Egzaminy | Zadania | Format |
 |---|---|---|---|
 | Zarządzanie ryzykiem zakładu ubezpieczeń | 84–96 | 130 | otwarte, po 5 pkt |
 | Matematyka pozostałych ubezpieczeń osobowych i majątkowych | 80–96 | 170 | wielokrotny wybór A–E |
+| Matematyka ubezpieczeń na życie | 90–96 | 70 | wielokrotny wybór A–E |
 
-Trzy typy kafelków: **zadanie** (klik → rozwiązanie krok po kroku), **wzór**, **fakt/definicja**. Filtry u góry pozwalają zawęzić feed do jednego typu albo jednego tematu — od teorii ruiny po alokację kapitału.
+Trzy typy kafelków: **zadanie** (klik → rozwiązanie krok po kroku), **wzór**, **fakt/definicja**.
+
+Filtry u góry zawężają feed po typie kafelka, temacie (od teorii ruiny po rezerwy) i numerze egzaminu. Każdy kafelek można oznaczyć jako **umiem** albo **nie umiem** — oznaczenia zapisują się w przeglądarce i same stają się filtrem, więc da się puścić feed wyłącznie po tym, co kuleje. Panel pod licznikiem przenosi postęp między urządzeniami przez kopiuj–wklej.
 
 Każde rozwiązanie kończy się sekcją **Pułapki** — gdzie realnie traci się punkty. Przy zadaniach wielokrotnego wyboru pułapki nazywają, pod jaką konkretną pomyłkę skonstruowano każdy dystraktor.
 
