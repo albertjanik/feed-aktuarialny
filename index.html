@@ -177,6 +177,7 @@ th{background:var(--surface-2);font-weight:600}
       <div class="seg" role="group" aria-label="Moduł">
         <button id="m-ryzyko" aria-pressed="true">Ryzyko</button>
         <button id="m-majatek" aria-pressed="false">Majątek</button>
+        <button id="m-zycie" aria-pressed="false">Życie</button>
       </div>
       <span class="count" id="count">wczytuję…</span>
     </div>
@@ -263,6 +264,7 @@ th{background:var(--surface-2);font-weight:600}
   /* ---- budowa kafelka ---- */
   var KIND={zadanie:'Zadanie',wzor:'Wzór',fakt:'Fakt'};
   var STLBL={nowy:'Nie widziałem',nieumiem:'Nie umiem',umiem:'Umiem'};
+  var MODULES={ryzyko:'Ryzyko',majatek:'Majątek',zycie:'Życie'};
   function build(c){
     var el=document.createElement('article');
     el.className='card';
@@ -350,8 +352,12 @@ th{background:var(--surface-2);font-weight:600}
     shuffle(pool); cursor=0; shown=0; koniec=false;
     feed.innerHTML='';
     if(!pool.length){
-      feed.appendChild(emptyState('Nic nie pasuje',
-        'Żaden kafelek nie pasuje do wybranych filtrów. Poluzuj temat, egzamin albo włącz więcej stanów wiedzy.'));
+      var pustyModul=!DATA.some(function(c){ return c.modul===state.modul; });
+      feed.appendChild(pustyModul
+        ? emptyState(MODULES[state.modul]+' w przygotowaniu',
+            'Ten moduł jeszcze nie ma kafelków — dosypujemy go partiami. Przełącz na inny moduł.')
+        : emptyState('Nic nie pasuje',
+            'Żaden kafelek nie pasuje do wybranych filtrów. Poluzuj temat, egzamin albo włącz więcej stanów wiedzy.'));
       loading.hidden=true; updateCount(); return;
     }
     loading.hidden=false;
@@ -396,8 +402,9 @@ th{background:var(--surface-2);font-weight:600}
 
   /* ---- sterowanie ---- */
   function syncUI(){
-    document.getElementById('m-ryzyko').setAttribute('aria-pressed',String(state.modul==='ryzyko'));
-    document.getElementById('m-majatek').setAttribute('aria-pressed',String(state.modul==='majatek'));
+    Object.keys(MODULES).forEach(function(m){
+      document.getElementById('m-'+m).setAttribute('aria-pressed',String(state.modul===m));
+    });
     ['zadanie','wzor','fakt'].forEach(function(t){
       document.getElementById('t-'+t).setAttribute('aria-pressed',String(state.typy.indexOf(t)>-1));
     });
@@ -425,8 +432,9 @@ th{background:var(--surface-2);font-weight:600}
   }
   function setModul(m){ state.modul=m; LS.set('modul',m); syncUI(); fillSelects(); updateProgress(); rebuild(); window.scrollTo(0,0); }
 
-  document.getElementById('m-ryzyko').addEventListener('click',function(){setModul('ryzyko');});
-  document.getElementById('m-majatek').addEventListener('click',function(){setModul('majatek');});
+  Object.keys(MODULES).forEach(function(m){
+    document.getElementById('m-'+m).addEventListener('click',function(){ setModul(m); });
+  });
   ['zadanie','wzor','fakt'].forEach(function(t){
     document.getElementById('t-'+t).addEventListener('click',function(){
       var i=state.typy.indexOf(t);
