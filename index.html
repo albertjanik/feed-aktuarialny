@@ -160,6 +160,38 @@ th{background:var(--surface-2);font-weight:600}
 .katex{font-size:1.02em}
 .katex-display{margin:.7em 0;overflow-x:auto;overflow-y:hidden;padding:2px 0}
 
+/* ---------- fiszka do obracania ---------- */
+.flip{perspective:1400px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.flip:focus-visible{outline:2px solid var(--accent);outline-offset:-3px;border-radius:10px}
+.flip-in{position:relative;transform-style:preserve-3d;min-height:84px;
+  transition:transform .55s cubic-bezier(.2,.8,.25,1), height .45s cubic-bezier(.2,.8,.25,1)}
+.flip.flipped .flip-in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0 0 auto 0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;padding:11px 16px 0}
+.face.back{transform:rotateY(180deg);background:var(--surface)}
+.face-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:5px}
+.face.front .face-lbl{color:var(--indigo)}
+.face.back .face-lbl{color:var(--ochre)}
+.face-cap{font-family:var(--sans);font-size:11.5px;line-height:1.4;color:var(--muted);margin-bottom:7px}
+.face-body{font-family:var(--serif);font-size:15.5px;line-height:1.62;color:var(--ink)}
+.face.front .face-body{font-size:16.5px;line-height:1.5;font-weight:500}
+.face-body>:first-child{margin-top:0}
+.face-body>:last-child{margin-bottom:0}
+.face-body p{margin:.5em 0}
+.face-body ul,.face-body ol{margin:.5em 0;padding-left:1.2em}
+.face-body li{margin:.18em 0}
+.face-body strong{font-weight:600}
+.flip-cta{margin-top:auto;padding:11px 0 12px;display:flex;align-items:center;gap:7px;
+  font-family:var(--sans);font-size:12px;font-weight:500;color:var(--accent)}
+.face.front .flip-cta{padding-top:14px}
+.flip-cta .rot{font-size:13px;transition:transform .3s ease}
+.flip:hover .flip-cta .rot{transform:rotate(180deg)}
+@media (prefers-reduced-motion:reduce){
+  .flip-in{transition:none}
+  .flip-cta .rot{transition:none}
+}
+
 .empty{text-align:center;padding:56px 20px;color:var(--muted)}
 .empty h2{font-family:var(--serif);font-size:20px;color:var(--ink);margin:0 0 8px}
 .empty p{margin:0 auto;max-width:36ch;font-size:14px}
@@ -185,6 +217,8 @@ th{background:var(--surface-2);font-weight:600}
       <button class="chip" id="t-zadanie" aria-pressed="true">Zadania</button>
       <button class="chip" id="t-wzor" aria-pressed="true">Wzory</button>
       <button class="chip" id="t-fakt" aria-pressed="true">Fakty</button>
+      <span class="sep" aria-hidden="true"></span>
+      <button class="chip" id="t-fiszki" aria-pressed="true" title="Wzory i fakty jako fiszki do obracania">Fiszki</button>
       <span class="sep" aria-hidden="true"></span>
       <button class="chip s-nowy" id="s-nowy" aria-pressed="true">Nie widziałem</button>
       <button class="chip s-nieumiem" id="s-nieumiem" aria-pressed="true">Nie umiem</button>
@@ -239,7 +273,8 @@ th{background:var(--surface-2);font-weight:600}
     typy:    LS.get('typy',['zadanie','wzor','fakt']),
     status:  LS.get('status',['nowy','nieumiem','umiem']),
     temat:   LS.get('temat','all'),
-    egzamin: LS.get('egzamin','all')
+    egzamin: LS.get('egzamin','all'),
+    fiszki:  LS.get('fiszki',true)
   };
 
   /* ---- markdown + LaTeX ---- */
@@ -261,6 +296,56 @@ th{background:var(--surface-2);font-weight:600}
   }
   function mdInline(src){ return md(src).replace(/^<p>/,'').replace(/<\/p>\s*$/,''); }
 
+  /* ---- fiszka do obracania (wzory i fakty) ----
+     Obie strony są pozycjonowane absolutnie, więc wysokość kontenera trzeba nadać
+     ręcznie: bierzemy większą z dwóch stron i pilnujemy jej przy zmianach szerokości
+     (ResizeObserver łapie też dociąganie fontów i KaTeX-a). */
+  var FITS=[];
+  function flipCard(c){
+    var wrap=document.createElement('div');
+    wrap.className='flip';
+    wrap.tabIndex=0;
+    wrap.setAttribute('role','button');
+    wrap.setAttribute('aria-label','Fiszka — kliknij, żeby odwrócić');
+    var inner=document.createElement('div'); inner.className='flip-in';
+    var front=document.createElement('div'); front.className='face front';
+    var back =document.createElement('div'); back.className='face back';
+
+    front.innerHTML='<div class="face-lbl">pytanie</div>'+
+      '<div class="face-body">'+md(c.przod)+'</div>'+
+      '<div class="flip-cta"><span>Odwróć</span><span class="rot">⟳</span></div>';
+    back.innerHTML='<div class="face-lbl">odpowiedź</div>'+
+      (c.tytul?'<div class="face-cap">'+mdInline(c.tytul)+'</div>':'')+
+      '<div class="face-body">'+md(c.tyl)+'</div>'+
+      '<div class="flip-cta"><span>Wróć do pytania</span><span class="rot">⟲</span></div>';
+
+    inner.appendChild(front); inner.appendChild(back); wrap.appendChild(inner);
+
+    /* wysokość = ta strona, która jest akurat na wierzchu — inaczej pytanie
+       wisiałoby w pustce rozmiaru odpowiedzi */
+    function fit(){
+      var h=(wrap.classList.contains('flipped')?back:front).offsetHeight;
+      if(h>0) inner.style.height=h+'px';
+    }
+    wrap._fit=fit; FITS.push(fit);
+    if(window.ResizeObserver){
+      var ro=new ResizeObserver(fit); ro.observe(front); ro.observe(back);
+    }
+    requestAnimationFrame(fit); setTimeout(fit,120); setTimeout(fit,600);
+
+    function toggle(){ wrap.classList.toggle('flipped'); fit(); }
+    wrap.addEventListener('click',toggle);
+    wrap.addEventListener('keydown',function(e){
+      if(e.key===' '||e.key==='Enter'||e.key==='Spacebar'){ e.preventDefault(); toggle(); }
+    });
+    return wrap;
+  }
+  var fitTimer=null;
+  window.addEventListener('resize',function(){
+    clearTimeout(fitTimer);
+    fitTimer=setTimeout(function(){ for(var i=0;i<FITS.length;i++) FITS[i](); },140);
+  });
+
   /* ---- budowa kafelka ---- */
   var KIND={zadanie:'Zadanie',wzor:'Wzór',fakt:'Fakt'};
   var STLBL={nowy:'Nie widziałem',nieumiem:'Nie umiem',umiem:'Umiem'};
@@ -279,10 +364,15 @@ th{background:var(--surface-2);font-weight:600}
                    '<span class="topic">'+(c.temat||'')+'</span>';
     el.appendChild(head);
 
-    var body=document.createElement('div');
-    body.className='card-body';
-    body.innerHTML=(c.tytul?'<h2 class="card-title">'+mdInline(c.tytul)+'</h2>':'')+md(c.tresc);
-    el.appendChild(body);
+    var fiszka = state.fiszki && c.typ!=='zadanie' && c.przod && c.tyl;
+    if(fiszka){
+      el.appendChild(flipCard(c));
+    } else {
+      var body=document.createElement('div');
+      body.className='card-body';
+      body.innerHTML=(c.tytul?'<h2 class="card-title">'+mdInline(c.tytul)+'</h2>':'')+md(c.tresc);
+      el.appendChild(body);
+    }
 
     if(c.typ==='zadanie' && c.rozwiazanie){
       var btn=document.createElement('button');
@@ -341,6 +431,7 @@ th{background:var(--surface-2);font-weight:600}
     return d;
   }
   function matches(c){
+    if(c.dup) return false;   /* kafelki powielające inny wpis nie wchodzą do puli */
     return c.modul===state.modul &&
            state.typy.indexOf(c.typ)>-1 &&
            state.status.indexOf(st(c.id))>-1 &&
@@ -350,6 +441,7 @@ th{background:var(--surface-2);font-weight:600}
   function rebuild(){
     pool=DATA.filter(matches);
     shuffle(pool); cursor=0; shown=0; koniec=false;
+    FITS.length=0;
     feed.innerHTML='';
     if(!pool.length){
       var pustyModul=!DATA.some(function(c){ return c.modul===state.modul; });
@@ -411,6 +503,7 @@ th{background:var(--surface-2);font-weight:600}
     ['nowy','nieumiem','umiem'].forEach(function(s){
       document.getElementById('s-'+s).setAttribute('aria-pressed',String(state.status.indexOf(s)>-1));
     });
+    document.getElementById('t-fiszki').setAttribute('aria-pressed',String(!!state.fiszki));
   }
   function fillSelects(){
     var seenT={}, listT=[], seenE={}, listE=[];
@@ -448,6 +541,9 @@ th{background:var(--surface-2);font-weight:600}
       if(i>-1){ if(state.status.length===1) return; state.status.splice(i,1); } else state.status.push(s);
       LS.set('status',state.status); syncUI(); rebuild();
     });
+  });
+  document.getElementById('t-fiszki').addEventListener('click',function(){
+    state.fiszki=!state.fiszki; LS.set('fiszki',state.fiszki); syncUI(); rebuild();
   });
   temat.addEventListener('change',function(){ state.temat=temat.value; LS.set('temat',state.temat); rebuild(); });
   egzamin.addEventListener('change',function(){ state.egzamin=egzamin.value; LS.set('egzamin',state.egzamin); rebuild(); });
