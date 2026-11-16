@@ -105,6 +105,8 @@ main{max-width:680px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-dire
 .k-zadanie{background:var(--accent-soft);color:var(--accent)}
 .k-wzor{background:var(--ochre-soft);color:var(--ochre)}
 .k-fakt{background:var(--indigo-soft);color:var(--indigo)}
+.k-kompendium{background:var(--warn-soft);color:var(--warn)}
+.chip.komp[aria-pressed="true"]{background:var(--warn-soft);color:var(--warn)}
 .src{font-family:var(--mono);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
 .topic{margin-left:auto;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);text-align:right}
 
@@ -217,6 +219,7 @@ th{background:var(--surface-2);font-weight:600}
       <button class="chip" id="t-zadanie" aria-pressed="true">Zadania</button>
       <button class="chip" id="t-wzor" aria-pressed="true">Wzory</button>
       <button class="chip" id="t-fakt" aria-pressed="true">Fakty</button>
+      <button class="chip komp" id="t-kompendium" aria-pressed="false" hidden>Kompendium</button>
       <span class="sep" aria-hidden="true"></span>
       <button class="chip" id="t-fiszki" aria-pressed="true" title="Wzory i fakty jako fiszki do obracania">Fiszki</button>
       <span class="sep" aria-hidden="true"></span>
@@ -347,7 +350,10 @@ th{background:var(--surface-2);font-weight:600}
   });
 
   /* ---- budowa kafelka ---- */
-  var KIND={zadanie:'Zadanie',wzor:'Wzór',fakt:'Fakt'};
+  var KIND={zadanie:'Zadanie',wzor:'Wzór',fakt:'Fakt',kompendium:'Kompendium'};
+  var TYPY_ZWYKLE=['zadanie','wzor','fakt'];
+  function isKomp(){ return state.typy.length===1 && state.typy[0]==='kompendium'; }
+  function hasKomp(m){ return DATA.some(function(c){ return c.modul===m && c.typ==='kompendium'; }); }
   var STLBL={nowy:'Nie widziałem',nieumiem:'Nie umiem',umiem:'Umiem'};
   var MODULES={ryzyko:'Ryzyko',majatek:'Majątek',zycie:'Życie'};
   function build(c){
@@ -436,11 +442,11 @@ th{background:var(--surface-2);font-weight:600}
            state.typy.indexOf(c.typ)>-1 &&
            state.status.indexOf(st(c.id))>-1 &&
            (state.temat==='all'||c.temat===state.temat) &&
-           (state.egzamin==='all'||String(c.egzamin)===state.egzamin);
+           (isKomp()||state.egzamin==='all'||String(c.egzamin)===state.egzamin);
   }
   function rebuild(){
     pool=DATA.filter(matches);
-    shuffle(pool); cursor=0; shown=0; koniec=false;
+    if(isKomp()) pool.sort(function(a,b){ return a.kolejnosc-b.kolejnosc; }); else shuffle(pool); cursor=0; shown=0; koniec=false;
     FITS.length=0;
     feed.innerHTML='';
     if(!pool.length){
@@ -464,6 +470,7 @@ th{background:var(--surface-2);font-weight:600}
     n=Math.min(n,pool.length);
     for(var i=0;i<n;i++){
       if(cursor>=pool.length){
+        if(isKomp()) break;
         if(pool.length<MIN_CYKL){
           koniec=true;
           var d=document.createElement('div'); d.className='empty';
@@ -476,8 +483,15 @@ th{background:var(--surface-2);font-weight:600}
       }
       frag.appendChild(build(pool[cursor++])); shown++;
     }
+    if(isKomp() && !koniec && cursor>=pool.length){
+      koniec=true;
+      var de=document.createElement('div'); de.className='empty';
+      de.innerHTML='<h2>Koniec kompendium</h2><p>To było wszystkie '+pool.length+' kafelków kompendium.</p>';
+      frag.appendChild(de);
+    }
     feed.appendChild(frag); updateCount();
     if(koniec) loading.hidden=true;
+    else requestAnimationFrame(function(){ var r=document.getElementById('sentinel').getBoundingClientRect(); if(pool.length && r.top<window.innerHeight+900) append(4); });
   }
   function updateCount(){ count.textContent = pool.length ? (shown+' / '+pool.length+' w puli') : '0 kafelków'; }
   function updateProgress(){
@@ -497,9 +511,11 @@ th{background:var(--surface-2);font-weight:600}
     Object.keys(MODULES).forEach(function(m){
       document.getElementById('m-'+m).setAttribute('aria-pressed',String(state.modul===m));
     });
-    ['zadanie','wzor','fakt'].forEach(function(t){
+    ['zadanie','wzor','fakt','kompendium'].forEach(function(t){
       document.getElementById('t-'+t).setAttribute('aria-pressed',String(state.typy.indexOf(t)>-1));
     });
+    document.getElementById('t-kompendium').hidden=!hasKomp(state.modul);
+    egzamin.hidden=isKomp();
     ['nowy','nieumiem','umiem'].forEach(function(s){
       document.getElementById('s-'+s).setAttribute('aria-pressed',String(state.status.indexOf(s)>-1));
     });
@@ -509,10 +525,11 @@ th{background:var(--surface-2);font-weight:600}
     var seenT={}, listT=[], seenE={}, listE=[];
     DATA.forEach(function(c){
       if(c.modul!==state.modul) return;
+      if((c.typ==='kompendium')!==isKomp()) return;
       if(!seenT[c.temat]){ seenT[c.temat]=1; listT.push(c.temat); }
       if(!seenE[c.egzamin]){ seenE[c.egzamin]=1; listE.push(c.egzamin); }
     });
-    listT.sort(function(a,b){ return a.localeCompare(b,'pl'); });
+    listT.sort(function(a,b){ return a.localeCompare(b,'pl',{numeric:true}); });
     listE.sort(function(a,b){ return b-a; });
     temat.innerHTML='<option value="all">Wszystkie tematy</option>';
     listT.forEach(function(t){ var o=document.createElement('option'); o.value=t; o.textContent=t; temat.appendChild(o); });
@@ -523,13 +540,20 @@ th{background:var(--surface-2);font-weight:600}
     if(listE.map(String).indexOf(state.egzamin)===-1) state.egzamin='all';
     egzamin.value=state.egzamin;
   }
-  function setModul(m){ state.modul=m; LS.set('modul',m); syncUI(); fillSelects(); updateProgress(); rebuild(); window.scrollTo(0,0); }
+  function setModul(m){ state.modul=m; LS.set('modul',m);
+    if(isKomp() && !hasKomp(m)){ state.typy=TYPY_ZWYKLE.slice(); LS.set('typy',state.typy); } syncUI(); fillSelects(); updateProgress(); rebuild(); window.scrollTo(0,0); }
 
   Object.keys(MODULES).forEach(function(m){
     document.getElementById('m-'+m).addEventListener('click',function(){ setModul(m); });
   });
+  document.getElementById('t-kompendium').addEventListener('click',function(){
+    state.typy = isKomp() ? TYPY_ZWYKLE.slice() : ['kompendium'];
+    state.temat='all'; LS.set('temat','all');
+    LS.set('typy',state.typy); syncUI(); fillSelects(); rebuild(); window.scrollTo(0,0);
+  });
   ['zadanie','wzor','fakt'].forEach(function(t){
     document.getElementById('t-'+t).addEventListener('click',function(){
+      if(isKomp()){ state.typy=[t]; state.temat='all'; LS.set('temat','all'); LS.set('typy',state.typy); syncUI(); fillSelects(); rebuild(); return; }
       var i=state.typy.indexOf(t);
       if(i>-1){ if(state.typy.length===1) return; state.typy.splice(i,1); } else state.typy.push(t);
       LS.set('typy',state.typy); syncUI(); rebuild();
@@ -585,7 +609,9 @@ th{background:var(--surface-2);font-weight:600}
   syncUI();
   fetch('cards.json',{cache:'no-cache'})
     .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
-    .then(function(d){ DATA=d; fillSelects(); updateProgress(); rebuild(); })
+    .then(function(d){ DATA=d;
+      if(state.typy.indexOf('kompendium')>-1 && (state.typy.length>1 || !hasKomp(state.modul))){ state.typy=TYPY_ZWYKLE.slice(); }
+      syncUI(); fillSelects(); updateProgress(); rebuild(); })
     .catch(function(e){
       feed.innerHTML='';
       feed.appendChild(emptyState('Nie udało się wczytać bazy zadań',

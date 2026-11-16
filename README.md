@@ -16,6 +16,8 @@ Fiszki do egzaminów aktuarialnych KNF w formie nieskończonego feedu. Przełąc
 
 Trzy typy kafelków: **zadanie** (klik → rozwiązanie krok po kroku), **wzór**, **fakt/definicja**.
 
+W modułach **Ryzyko** i **Życie** jest też przycisk **Kompendium**: pokazuje wyłącznie kafelki ostatecznego kompendium (wzory i fakty zebrane z egzaminów), w kolejności rozdziałów, bez tasowania.
+
 Filtry u góry zawężają feed po typie kafelka, temacie (od teorii ruiny po rezerwy) i numerze egzaminu. Każdy kafelek można oznaczyć jako **umiem** albo **nie umiem** — oznaczenia zapisują się w przeglądarce i same stają się filtrem, więc da się puścić feed wyłącznie po tym, co kuleje. Panel pod licznikiem przenosi postęp między urządzeniami przez kopiuj–wklej.
 
 Każde rozwiązanie kończy się sekcją **Pułapki** — gdzie realnie traci się punkty. Przy zadaniach wielokrotnego wyboru pułapki nazywają, pod jaką konkretną pomyłkę skonstruowano każdy dystraktor.
