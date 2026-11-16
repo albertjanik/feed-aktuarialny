@@ -370,7 +370,7 @@ th{background:var(--surface-2);font-weight:600}
                    '<span class="topic">'+(c.temat||'')+'</span>';
     el.appendChild(head);
 
-    var fiszka = state.fiszki && c.typ!=='zadanie' && c.przod && c.tyl;
+    var fiszka = (state.fiszki || c.typ==='kompendium') && c.typ!=='zadanie' && c.przod && c.tyl;
     if(fiszka){
       el.appendChild(flipCard(c));
     } else {
